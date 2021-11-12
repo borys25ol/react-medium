@@ -1,38 +1,26 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+
+import { useFetch } from '../../hooks/useFetch'
 
 function Authentication() {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [{ isLoading }, doFetch] = useFetch('users/login')
 
   const handleSubmit = event => {
     event.preventDefault()
-    setIsSubmitting(true)
-  }
-  useEffect(() => {
-    if (!isSubmitting) {
-      return
-    }
-    axios('https://conduit.productionready.io/api/users/login', {
+    doFetch({
       method: 'post',
       data: {
         user: {
-          email,
-          password,
+          email: email,
+          password: password,
         },
       },
     })
-      .then(res => {
-        console.log('success')
-        setIsSubmitting(false)
-      })
-      .catch(error => {
-        setIsSubmitting(false)
-        console.log('success')
-      })
-  })
+  }
+
   return (
     <div className="auth-page">
       <div className="container page">
@@ -65,7 +53,7 @@ function Authentication() {
                 <button
                   className="btn btn-lg btn-primary pull-xs-right"
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isLoading}
                 >
                   Sign in
                 </button>
