@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import axios from 'axios'
 
 export const useFetch = endpoint => {
-  const baseUrl = 'https://conduit.productionready.io/api'
+  const baseUrl = 'https://api.realworld.io/api'
   const [isLoading, setIsLoading] = React.useState(false)
   const [response, setResponse] = React.useState(null)
   const [error, setError] = React.useState(null)
