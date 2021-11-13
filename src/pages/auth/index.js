@@ -1,24 +1,42 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Link, Redirect } from 'react-router-dom'
 
 import { useFetch } from '../../hooks/useFetch'
 
-function Authentication() {
+function Authentication(props) {
+  const isLogin = props.location.pathname === '/login'
+  const pageTitle = isLogin ? 'Sign In' : 'Sign Up'
+  const descriptionLink = isLogin ? '/register' : '/login'
+  const descriptionText = isLogin ? 'Need an account?' : 'Have an account?'
+  const apiUrl = isLogin ? '/users/login' : '/users'
+
+  const [username, setUsername] = React.useState('')
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const [{ isLoading }, doFetch] = useFetch('users/login')
+  const [isSuccessSubmit, setIsSuccessSubmit] = React.useState(false)
+  const [{ isLoading, response }, doFetch] = useFetch(apiUrl)
 
   const handleSubmit = event => {
     event.preventDefault()
+    const user = isLogin ? { email, password } : { username, email, password }
     doFetch({
       method: 'post',
       data: {
-        user: {
-          email: email,
-          password: password,
-        },
+        user,
       },
     })
+  }
+
+  useEffect(() => {
+    if (!response) {
+      return
+    }
+    localStorage.setItem('token', response.user.token)
+    setIsSuccessSubmit(true)
+  }, [response])
+
+  if (isSuccessSubmit) {
+    return <Redirect to="/" />
   }
 
   return (
@@ -26,12 +44,23 @@ function Authentication() {
       <div className="container page">
         <div className="row">
           <div className="col-md-6 offset-md-3 col-xs-12">
-            <h1 className="text-xs-center">Login</h1>
+            <h1 className="text-xs-center">{pageTitle}</h1>
             <p className="text-xs-center">
-              <Link to="/register">Need an account?</Link>
+              <Link to={descriptionLink}>{descriptionText}</Link>
             </p>
             <form onSubmit={handleSubmit}>
               <fieldset>
+                {!isLogin && (
+                  <fieldset className="form-group">
+                    <input
+                      className="form-control form-control-lg"
+                      placeholder="Username"
+                      type="text"
+                      value={username}
+                      onChange={e => setUsername(e.target.value)}
+                    />
+                  </fieldset>
+                )}
                 <fieldset className="form-group">
                   <input
                     className="form-control form-control-lg"
@@ -55,7 +84,7 @@ function Authentication() {
                   type="submit"
                   disabled={isLoading}
                 >
-                  Sign in
+                  {pageTitle}
                 </button>
               </fieldset>
             </form>
