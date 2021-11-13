@@ -28,7 +28,7 @@ export const useFetch = endpoint => {
         setIsLoading(false)
         setError(error.response.data)
       })
-  })
+  }, [isLoading, options, endpoint])
 
   return [{ isLoading, response, error }, doFetch]
 }

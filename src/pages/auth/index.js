@@ -35,7 +35,7 @@ function Authentication(props) {
     }
     setToken(response.user.token)
     setIsSuccessSubmit(true)
-  }, [response])
+  }, [response, setToken])
 
   if (isSuccessSubmit) {
     return <Redirect to="/" />
