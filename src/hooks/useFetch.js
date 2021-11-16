@@ -1,23 +1,32 @@
-import React, { useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
+
+import { useLocalStorage } from './useLocalStorage'
 
 export const useFetch = endpoint => {
   const baseUrl = 'https://api.realworld.io/api'
-  const [isLoading, setIsLoading] = React.useState(false)
-  const [response, setResponse] = React.useState(null)
-  const [error, setError] = React.useState(null)
-  const [options, setOptions] = React.useState({})
+  const [isLoading, setIsLoading] = useState(false)
+  const [response, setResponse] = useState(null)
+  const [error, setError] = useState(null)
+  const [options, setOptions] = useState({})
+  const [token] = useLocalStorage('token')
 
-  const doFetch = (options = {}) => {
+  const doFetch = useCallback((options = {}) => {
     setOptions(options)
     setIsLoading(true)
-  }
+  }, [])
 
   useEffect(() => {
+    const requestOptions = {
+      ...options,
+      ...{
+        headers: { authorization: token ? `Token ${token}` : '' },
+      },
+    }
     if (!isLoading) {
       return
     }
-    axios(baseUrl + endpoint, options)
+    axios(baseUrl + endpoint, requestOptions)
       .then(res => {
         console.log('success')
         setIsLoading(false)
@@ -28,7 +37,7 @@ export const useFetch = endpoint => {
         setIsLoading(false)
         setError(error.response.data)
       })
-  }, [isLoading, options, endpoint])
+  }, [isLoading, options, endpoint, token])
 
   return [{ isLoading, response, error }, doFetch]
 }
