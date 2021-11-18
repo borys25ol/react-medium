@@ -3,6 +3,7 @@ import { stringify } from 'query-string'
 
 import Feed from '../../components/Feed'
 import Pagination from '../../components/Pagination'
+import PopularTags from '../../components/PopularTags'
 import { useFetch } from '../../hooks/useFetch'
 import { getPaginator, limit } from '../../utils'
 
@@ -44,7 +45,12 @@ function GlobalFeed({ location, match }) {
               </Fragment>
             )}
           </div>
-          <div className="col-md-3">Popular tags</div>
+          <div className="col-md-3">
+            <div className="sidebar">
+              <p>Popular Tags</p>
+              <PopularTags />
+            </div>
+          </div>
         </div>
       </div>
     </div>
