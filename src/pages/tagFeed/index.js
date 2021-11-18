@@ -10,18 +10,20 @@ import Loading from '../../components/Loading'
 import ErrorMessage from '../../components/ErrorMessage'
 import FeedToggler from '../../components/FeedToggler'
 
-function GlobalFeed({ location, match }) {
+function TagFeed({ location, match }) {
+  const tagName = match.params.slug
   const { currentPage, offset } = getPaginator(location.search)
   const stringifyParams = stringify({
     limit,
     offset,
+    tag: tagName
   })
   const apiUrl = `/articles?${stringifyParams}`
   const [{ response, isLoading, error }, doFetch] = useFetch(apiUrl)
 
   useEffect(() => {
     doFetch()
-  }, [doFetch, currentPage])
+  }, [doFetch, currentPage, tagName])
 
   if (isLoading || !response) {
     return <Loading />
@@ -42,7 +44,7 @@ function GlobalFeed({ location, match }) {
       <div className="container page">
         <div className="row">
           <div className="col-md-9">
-            <FeedToggler />
+            <FeedToggler tagName={tagName} />
             <Fragment>
               <Feed articles={response.articles} />
               <Pagination
@@ -65,4 +67,4 @@ function GlobalFeed({ location, match }) {
   )
 }
 
-export default GlobalFeed
+export default TagFeed
