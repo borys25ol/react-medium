@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { stringify } from 'query-string'
 
 import { useFetch } from '../../hooks/useFetch'
@@ -46,15 +46,15 @@ function YourFeed({ location, match }) {
             {response.articlesCount === 0 && (
               <div className="app-article-preview">No articles are here... yet.</div>
             )}
-            <Fragment>
-              <Feed articles={response.articles} />
+            <Feed articles={response.articles} />
+            {response.articlesCount > limit && (
               <Pagination
                 total={response.articlesCount}
                 limit={limit}
                 url={match.url}
                 currentPage={currentPage}
               />
-            </Fragment>
+            )}
           </div>
           <div className="col-md-3">
             <div className="sidebar">

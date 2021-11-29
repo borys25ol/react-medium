@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { stringify } from 'query-string'
 
 import { useFetch } from '../../hooks/useFetch'
@@ -43,15 +43,15 @@ function GlobalFeed({ location, match }) {
         <div className="row">
           <div className="col-md-9">
             <FeedToggler />
-            <Fragment>
-              <Feed articles={response.articles} />
+            <Feed articles={response.articles} />
+            {response.articlesCount > limit && (
               <Pagination
                 total={response.articlesCount}
                 limit={limit}
                 url={match.url}
                 currentPage={currentPage}
               />
-            </Fragment>
+            )}
           </div>
           <div className="col-md-3">
             <div className="sidebar">
