@@ -7,36 +7,24 @@ import { CurrentUserContext } from '../contexts/currentUser'
 function CurrentUserChecker({ children }) {
   const [token] = useLocalStorage('token')
   const [{ response }, doFetch] = useFetch('/user')
-  const [, setCurrentUserState] = useContext(CurrentUserContext)
+  const [, dispatch] = useContext(CurrentUserContext)
 
   useEffect(() => {
     if (!token) {
-      setCurrentUserState(state => ({
-        ...state,
-        isLoggedIn: false,
-      }))
-      return
+      dispatch({ type: 'SET_UNAUTHORIZED' })
     }
     doFetch({
       method: 'get',
     })
-    setCurrentUserState(state => ({
-      ...state,
-      isLoading: true,
-    }))
-  }, [token, doFetch, setCurrentUserState])
+    dispatch({ type: 'LOADING' })
+  }, [token, doFetch, dispatch])
 
   useEffect(() => {
     if (!response) {
       return
     }
-    setCurrentUserState(state => ({
-      ...state,
-      isLoggedIn: true,
-      isLoading: false,
-      currentUser: response.user,
-    }))
-  }, [response, setCurrentUserState])
+    dispatch({ type: 'SET_AUTHORIZED', payload: response.user })
+  }, [response, dispatch])
 
   return children
 }
