@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+import TagList from './TagList'
+
 function Feed({ articles }) {
   return (
     <div>
@@ -18,17 +20,11 @@ function Feed({ articles }) {
                 <span className="date">{article.createdAt}</span>
               </div>
             </div>
-            <Link className="preview-link" to={`/profile/${article.slug}`}>
+            <Link className="preview-link" to={`/articles/${article.slug}`}>
               <h1>{article.title}</h1>
               <p>{article.description}</p>
               <span>Read more...</span>
-              <ul className="tag-list">
-                {article.tagList.map(tag => (
-                  <li key={tag} className="tag-default tag-pill tag-outline">
-                    {tag}
-                  </li>
-                ))}
-              </ul>
+              <TagList tags={article.tagList} />
             </Link>
           </div>
         )
